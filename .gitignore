@@ -30,3 +30,4 @@ node_modules
 *~
 
 .env
+.ebextensions/app.config

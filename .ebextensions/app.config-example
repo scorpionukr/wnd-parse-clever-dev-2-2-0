@@ -1,0 +1,12 @@
+option_settings:
+  aws:elasticbeanstalk:application:environment:
+    PARSE_MOUNT: "/parse"
+    APP_ID: "myAppId"
+    MASTER_KEY: "myMasterKey"
+    DATABASE_URI: "Your DB URI"
+    NODE_ENV: "production"
+    CLEVERTAP_ACCOUNT_ID: "Your CleverTap Account Id"
+    CLEVERTAP_ACCOUNT_PASSCODE: "Your CleverTap Account Token""
+
+  aws:elasticbeanstalk:container:nodejs:
+    NodeCommand: "npm start" 
