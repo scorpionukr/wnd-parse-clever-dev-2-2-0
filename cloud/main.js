@@ -19,13 +19,10 @@ Parse.Cloud.define('push', function(req, res) {
         res.error("channels not present");
     }
 
-    var payload = {
+    const payload = {
             "name": "test push " + Math.round(new Date().getTime()/1000),
             "when": "now",
             "where": {
-                "event_name": "App Launched",
-                "from": 20160101,
-                "to": 20160630,
                 "common_profile_prop": {
                     "profile_fields": [{"name": "channels", "value": channels}]
                 }
