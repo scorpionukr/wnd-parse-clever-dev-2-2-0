@@ -11,10 +11,84 @@ Read the full Parse Server guide here: https://github.com/ParsePlatform/parse-se
 * `npm install`
 * Install mongo locally using http://docs.mongodb.org/master/tutorial/install-mongodb-on-os-x/
 * Run `mongo` to connect to your database, just to make sure it's working. Once you see a mongo prompt, exit with Control-D
+
+* Uses dotenv to load environment variables:
+** `cp .env-example .env`
+** edit .env to include your Parse AppId, MasterKey and your CleverTap Account ID and CleverTap Account Token.
+
+
 * Run the server with: `npm start`
 * By default it will use a path of /parse for the API routes.  To change this, or use older client SDKs, run `export PARSE_MOUNT=/1` before launching the server.
 * You now have a database named "dev" that contains your Parse data
 * Install ngrok and you can test with devices
+
+### Usage With CleverTap Push Notifications
+
+* The CleverTap Node.js module will be installed during npm install. You can use it in your cloud code (cloud/main.js) to send push like this:
+
+```javascript
+const CleverTap = require("clevertap");
+const clevertap = CleverTap.init(process.env.CLEVERTAP_ACCOUNT_ID, process.env.CLEVERTAP_ACCOUNT_PASSCODE);
+
+Parse.Cloud.define('push', function(req, res) {
+    
+    /**
+     * Send an immediate push to users subscribed to the specified channels
+     *
+     */
+
+    const channels = req.params.channels;
+
+    if (!channels) {
+        res.error("channels not present");
+    }
+
+    const payload = {
+        "name": "test push " + Math.round(new Date().getTime()/1000),
+        "when": "now",
+        "where": {
+            "common_profile_prop": {
+                "profile_fields": [{"name": "channels", "value": channels}]
+            }
+        },
+        "content": {
+            "title":"Hello!",
+            "body":"Just testing"
+        },
+        "devices": ["ios", "android"]
+    }
+
+    clevertap.targets(clevertap.TARGET_CREATE, payload, {"debug":1}).then((r) => {
+        res.success(r);
+    });
+});
+
+Parse.Cloud.afterSave('GameScore', function(req) {
+    /**
+     * Send all users an immediate push notifiying them of a new Game Score. 
+     *
+     */
+
+    const gameScore = req.object;
+    const body = (gameScore) ? `New Game Score: ${gameScore.get("playerName")} ${gameScore.get("score")}` : "New Game Score";
+    const payload = {
+        "name": "test push " + Math.round(new Date().getTime()/1000),
+        "when": "now",
+        "segment":"all",
+        "content": {
+            "title": "Hey There!",
+            "body": body,
+        },
+        "devices": ["ios", "android"]
+    }
+
+    clevertap.targets(clevertap.TARGET_CREATE, payload, {"debug":1}).then((r) => {
+        console.log(r);
+    });
+});
+```
+
+[Learn more about getting started with CleverTap Push Notifications here](https://support.clevertap.com/migration/parse/).
 
 ### Getting Started With Heroku + Mongolab Development
 
