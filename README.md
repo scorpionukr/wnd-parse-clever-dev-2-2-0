@@ -36,6 +36,7 @@ Parse.Cloud.define('push', function(req, res) {
 
     if (!channels) {
         res.error("channels not present");
+        return;
     }
 
     const payload = {
