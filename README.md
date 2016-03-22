@@ -13,8 +13,8 @@ Read the full Parse Server guide here: https://github.com/ParsePlatform/parse-se
 * Run `mongo` to connect to your database, just to make sure it's working. Once you see a mongo prompt, exit with Control-D
 
 * Uses dotenv to load environment variables:
-** `cp .env-example .env`
-** edit .env to include your Parse AppId, MasterKey and your CleverTap Account ID and CleverTap Account Token.
+* `cp .env-example .env`  
+* edit .env to include your Parse AppId, MasterKey and your CleverTap Account ID and CleverTap Account Token.  
 
 
 * Run the server with: `npm start`
